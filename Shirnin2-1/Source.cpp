@@ -1,106 +1,130 @@
 #include <iostream>
-#include <ctime>
-#include "stdlib.h"
-
+#include <fstream>
+#include <string>
 using namespace std;
-
 
 int main()
 {
-	setlocale(LC_ALL, "Russian");
+	setlocale(LC_ALL, "RUSSIAN");
 
-	int a, b, i, j, length;
-	int maxarr, minarr, maxi, maxj, mini, minj, temp = 0;
-	
-	cout << "Введите размер матрицы" << endl;
-	cin >> length;
+	int const n = 4, m = 3;
+	int A[n][m], B[m], C[m][n], D[m], CT[n][m];
 
-	int** arr2 = new int* [length];
-	for (i = 0; i < length; i++)
-		arr2[i] = new int[length];
+	ifstream fine;
+	fine.open("MasA.txt");
 
-	cout << "Введите a и b через пробел" << endl;
-	cin >> a >> b;
+	if (!fine)
+	{
+		cout << "Файл не открыт\n\n";
+		return -1;
+	}
 
-	srand(time(NULL));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			fine >> A[i][j];
+	fine.close();
 
-	for (i = 0; i < length; i++)
+	cout << endl << endl << "Massive A:" << endl;
+	for (int i = 0; i < n; i++)
 	{
 		cout << endl;
-		for (j = 0; j < length; j++)
-		{
-			arr2[i][j] = rand() % (b - a + 1) + a;
-			cout << arr2[i][j] << " ";
-		}
+		for (int j = 0; j < m; j++)
+			cout << A[i][j] << " ";
 	}
 
-	cout << endl;
-	maxarr = a;
-	minarr = b;
-	maxi = 0;
-	maxj = 0;
-	mini = 0;
-	minj = length - 1;
 
-	temp = 0;
+	fine.open("VekB.txt");
 
-	for (i = 0; i < length; i++)
+	if (!fine)
 	{
-		for (j = 0; j <= temp; j++)
-		{
-			if ((arr2[i][j] < 0) && (maxarr < arr2[i][j]))
-			{
-				maxarr = arr2[i][j];
-				maxi = i;
-				maxj = j;
-			}
-		}
-
-		if (i < length / 2)
-			temp++;
-		else
-			temp--;
+		cout << "Файл не открыт\n\n";
+		return -1;
 	}
 
-	temp = 1;
+	for (int i = 0; i < m; i++)
+		fine >> B[i];
+	fine.close();
 
-	for (i = 0; i < length; i++)
+
+	fine.open("MasC.txt");
+
+	if (!fine)
 	{
-		for (j = length - temp; j < length; j++)
-		{
-			if ((arr2[i][j] > 0) && (minarr > arr2[i][j]))
-			{
-				minarr = arr2[i][j];
-				mini = i;
-				minj = j;
-			}
-		}
-		cout << "OK" << endl;
-
-		if (i < length / 2)
-			temp++;
-		else
-			temp--;
+		cout << "Файл не открыт\n\n";
+		return -1;
 	}
 
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			fine >> C[i][j];
+	fine.close();
 
-
-	temp = arr2[mini][minj];
-	arr2[mini][minj] = arr2[maxi][maxj];
-	arr2[maxi][maxj] = temp;
-
-	cout << "Изменённая матрица" << endl;
-	cout << "Идексы max i и j : " << maxi << " , " << maxj << endl;
-	cout << "Идексы min i и j : " << mini << " , " << minj << endl;
-
-	for (i = 0; i < length; i++)
+	cout << endl << endl << "Massive C:" << endl;
+	for (int i = 0; i < m; i++)
 	{
 		cout << endl;
-		for (j = 0; j < length; j++)
+		for (int j = 0; j < n; j++)
+			cout << C[i][j] << " ";
+	}
+
+
+	fine.open("VekD.txt");
+
+	if (!fine)
+	{
+		cout << "Файл не открыт\n\n";
+		return -1;
+	}
+
+	for (int i = 0; i < m; i++)
+		fine >> D[i];
+	fine.close();
+
+
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			CT[i][j] = A[j][i];
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			CT[i][j] *= 5;
+
+	cout << endl << endl << "Massive C (transposed):" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << endl;
+		for (int j = 0; j < m; j++)
 		{
-			cout << arr2[i][j] << " ";
+			cout << CT[i][j] << " ";
+
 		}
 	}
+
+	int F[n];
+
+	for (int i = 0; i < n; i++)
+		F[i] = 0;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			F[i] += B[j] * A[i][j];
+
+	int G[n];
+
+	for (int i = 0; i < n; i++)
+		G[i] = 0;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			G[i] += D[j] * CT[i][j];
+
+	for (int i = 0; i < n; i++)
+		F[i] += G[i];
+
+	cout << endl << endl << "Результат : ";
+	for (int i = 0; i < n; i++)
+		cout << F[i] << " ";
 
 	return 0;
 }
