@@ -11,7 +11,7 @@ int main()
 
 	int a, b, i, j, length;
 	int maxarr, minarr, maxi, maxj, mini, minj, temp = 0;
-
+	
 	cout << "¬ведите размер матрицы" << endl;
 	cin >> length;
 
